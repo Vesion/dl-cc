@@ -2,29 +2,14 @@
 
 #include "nn.h"
 
-#include <vector>
-#include <cmath>
 #include <iostream>
-#include <fstream>
-#include <sstream>
 
 using namespace std;
 using namespace nn;
 
-int main(int argc, char** argv) {
-  //cout << "topology: 2 4 1" << endl;
-  //for(int i = 2000; i >= 0; --i) {
-    //double a = (rand() / double(RAND_MAX));
-    //double b = (rand() / double(RAND_MAX));
-    //int n1 = (int)(2.0 * rand() / double(RAND_MAX));
-    //int n2 = (int)(2.0 * rand() / double(RAND_MAX));
-    //cout << a << " " << b << endl;
-    //int t = n1 ^ n2; // should be 0 or 1
-    //cout << t << ".0" << endl; 
-  //}
-
-  FCN fcn("/Users/Xiang/Workspace/DL/dl-tutorial/nn-from-scratch/train_set.in");
+int main() {
+  FCN fcn("train_set.in");
   fcn.StartTraining(1, 0.01);
-  cout << "end" << endl;
+  cout << "training end" << endl;
   return 0;
 }
