@@ -32,11 +32,11 @@ using namespace std;
 
 namespace nn {
 
-class FCN { // Fully Connected Network
+class FullyConnectedNetwork {
 public:
-  FCN() = delete;
-  FCN(const string& filename);
-  ~FCN();
+  FullyConnectedNetwork() = delete;
+  FullyConnectedNetwork(const string& filename);
+  ~FullyConnectedNetwork();
   void StartTraining(unsigned epochs, double learning_rate);
   double GetOutput() const;
   double GetLossError() const;
@@ -91,7 +91,7 @@ private:
   streampos data_start_p_;
 };
 
-FCN::FCN(const string& filename) {
+FullyConnectedNetwork::FullyConnectedNetwork(const string& filename) {
   fin_.open(filename.c_str(), ios::in);
   if (!fin_.is_open()) {
     cerr << "No train set input. " << endl;
@@ -104,7 +104,7 @@ FCN::FCN(const string& filename) {
   stringstream ss(line);
   ss >> t;
   if (t != "topology:") {
-    cerr << "Need a topology to initialize fcn. " << endl;
+    cerr << "Need a topology to initialize network. " << endl;
     abort();
   }
   unsigned d;
@@ -132,19 +132,19 @@ FCN::FCN(const string& filename) {
   data_start_p_ = fin_.tellg();
 }
 
-FCN::~FCN() {
+FullyConnectedNetwork::~FullyConnectedNetwork() {
   if (fin_.is_open()) fin_.close();
 }
 
-double FCN::GetOutput() const {
+double FullyConnectedNetwork::GetOutput() const {
   return output_;
 }
 
-double FCN::GetLossError() const {
+double FullyConnectedNetwork::GetLossError() const {
   return LossFunction(output_, label_);
 }
 
-void FCN::StartTraining(unsigned epochs, double learning_rate) {
+void FullyConnectedNetwork::StartTraining(unsigned epochs, double learning_rate) {
   eta = learning_rate;
   for (unsigned epoch = 1; epoch <= epochs; ++epoch) {
     fin_.seekg(data_start_p_);
@@ -152,7 +152,7 @@ void FCN::StartTraining(unsigned epochs, double learning_rate) {
   }
 }
 
-void FCN::IterateOneEpoch() {
+void FullyConnectedNetwork::IterateOneEpoch() {
 #ifdef __NN_DEBUG
   int example_id = 1;
 #endif
@@ -181,7 +181,7 @@ void FCN::IterateOneEpoch() {
   }
 }
 
-bool FCN::GetNextInputs() {
+bool FullyConnectedNetwork::GetNextInputs() {
   string line;
   getline(fin_, line);
   if (line.empty()) return false;
@@ -197,7 +197,7 @@ bool FCN::GetNextInputs() {
 }
 
 // calculate x and y of each neuron
-void FCN::FeedForward() {
+void FullyConnectedNetwork::FeedForward() {
   y_[0] = x_[0];
   for (unsigned l = 1; l < num_layers_; ++l) {
     for (unsigned j = 0; j < x_[l].size(); ++j) {
@@ -212,8 +212,7 @@ void FCN::FeedForward() {
   output_ = y_.back()[0];
 }
 
-void FCN::Backpropagation() {
-  //double E = LossFunction(output_, label_);
+void FullyConnectedNetwork::Backpropagation() {
   auto dEy = x_, dEx = x_;
 
   for (int l = num_layers_-1; l > 0; --l) {
@@ -249,12 +248,11 @@ void FCN::Backpropagation() {
     auto& weight = weights_[l-1];
     for (unsigned i = 0; i < weight.size(); ++i) {
       for (unsigned j = 0; j < weight[0].size(); ++j) {
-
         double dEw = y_[l-1][i] * dEx[l][j]; // gradient
         weight[i][j] -= eta * dEw; // graident descent
       }
     }
   }
 }
-
 } // end namespace
+

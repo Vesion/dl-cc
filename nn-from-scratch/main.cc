@@ -8,7 +8,7 @@ using namespace std;
 using namespace nn;
 
 int main() {
-  FCN fcn("train_set.in");
+  FullyConnectedNetwork fcn("train_set.in");
   fcn.StartTraining(1, 0.01);
   cout << "training end" << endl;
   return 0;
